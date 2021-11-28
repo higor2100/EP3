@@ -2,11 +2,11 @@ from pandas import read_csv
 
 def acharInicio(lista):
     localizou = False
-    for i in range(len(teste)):
+    for i in range(len(lista)):
         if localizou:
             break
-        for j in range(len(teste[i])):
-            if str(teste[i][j])=="i":
+        for j in range(len(lista[i])):
+            if str(lista[i][j])=="i":
                 coluna, linha = i,  j
                 localizou = True
     return  coluna, linha
@@ -18,13 +18,13 @@ def move(lista, coluna, linha, direcao):
         return lista[coluna-1][linha], coluna-1, linha
     #Direita
     elif direcao == 2:
-        return lista[coluna+1][linha], coluna+1, linha
+        return lista[coluna+1][linha], coluna+1, linha    
     #Cima
     elif direcao == 1:
-        return lista[coluna][linha+1], coluna, linha+1
+        return lista[coluna][linha-1], coluna, linha-1
     #Baixo
     elif direcao == 0:
-        return lista[coluna][linha-1], coluna, linha-1
+        return lista[coluna][linha+1], coluna, linha+1
 
         
 
@@ -36,13 +36,33 @@ def movimento(lista, coluna, linha, mover):
     else:
         lista[colunaNova][linhaNova] = lista[coluna][linha]
         lista[coluna][linha] = teste
-        return lista, linhaNova, colunaNova
+        return lista, colunaNova, linhaNova
 
-teste = read_csv("./Data/Dados.csv", sep=";", header=None)
-coluna, linha = acharInicio(teste)
+def jogarJogoManual():
+    Dados = read_csv("./Data/Dados.csv", sep=";", header=None)
+    coluna, linha = acharInicio(Dados) 
+    pontuação = 0
+    fim = "i"    
+    while fim != "f":
+        digitado = int(input())
+        jogada = movimento(Dados,coluna,linha,digitado)
+        if type(jogada) == type(""):
+            if jogada == "p":
+                pontuação -= 1000
+            elif jogada == "c":
+                pontuação -= 100
+            elif jogada == "f":
+                pontuação += 500
+                fim = "f"
+            print(Dados)
+            print("")
+            print("Pontuação: ", pontuação)
+        else:
+            pontuação += 100
+            Dados, coluna, linha = jogada
+            print(Dados)
+            print("")
+            print("Pontuação: ", pontuação)
 
-
-jogada = movimento(teste,coluna,linha,3)
-print(type(jogada) == type(""))
-jogada = movimento(teste,coluna,linha,2)
-print(type(jogada)==type(()))
+jogarJogoManual()
+            
