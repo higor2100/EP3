@@ -1,5 +1,15 @@
 from pandas import read_csv
+from random import randrange
 
+def inicio(Dados):
+    i, j = randrange(11), randrange(11)
+    while True:
+        if str(Dados[i][j]) == "v":
+            break
+        i, j = randrange(11), randrange(11)
+    Dados[i][j] = "i"
+    return Dados
+        
 def acharInicio(lista):
     localizou = False
     for i in range(len(lista)):
@@ -30,39 +40,45 @@ def move(lista, coluna, linha, direcao):
 
 
 def movimento(lista, coluna, linha, mover):
-    teste,  colunaNova, linhaNova = move(lista,coluna,linha,mover)
-    if str(teste)=="l" or str(teste)=="c" or str(teste)=="p" or str(teste)=="f":
-        return str(teste)
+    resultado,  colunaNova, linhaNova = move(lista,coluna,linha,mover)
+    if str(resultado)=="l" or str(resultado)=="c" or str(resultado)=="p" or str(resultado)=="f":
+        return str(resultado)
     else:
         lista[colunaNova][linhaNova] = lista[coluna][linha]
-        lista[coluna][linha] = teste
+        lista[coluna][linha] = resultado
         return lista, colunaNova, linhaNova
 
 def jogarJogoManual():
-    Dados = read_csv("./Data/Dados.csv", sep=";", header=None)
+    Dados = read_csv("./Data/Dados.csv", sep=";", header=None, index_col = False)
+    Dados = inicio(Dados)
     coluna, linha = acharInicio(Dados) 
     pontuação = 0
     fim = "i"    
     while fim != "f":
-        digitado = int(input())
+        print(Dados)
+        digitado = int(input("Digite:\n0 para Descer\n1 para Subir\n2 para Direita\n3 para Esquerda\n"))
+        score = 0
         jogada = movimento(Dados,coluna,linha,digitado)
         if type(jogada) == type(""):
             if jogada == "p":
                 pontuação -= 1000
+                score = -1000
             elif jogada == "c":
                 pontuação -= 100
+                score = -100
             elif jogada == "f":
                 pontuação += 500
+                score = 500
                 fim = "f"
             print(Dados)
-            print("")
-            print("Pontuação: ", pontuação)
+            print("\nPontuação Atual: " + str(pontuação) + " Pontuação adquirida: " + str(score))
         else:
             pontuação += 100
+            score = 100
             Dados, coluna, linha = jogada
             print(Dados)
             print("")
-            print("Pontuação: ", pontuação)
+            print("\nPontuação Atual: " + str(pontuação) + " Pontuação adquirida: " + str(score))
 
 jogarJogoManual()
             
