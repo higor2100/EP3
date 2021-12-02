@@ -2,28 +2,47 @@
 
 # The taxi environment was adapted in order to solve the autonomous vehicle in a parking lot problem proposed by Rishal Hurbans in his book Artificial Intelligence Algorithms, 2020, ISBN 9781617296185.
 
-
 import sys
 from io import StringIO
 from gym import utils
 from gym_parking_lot.envs import discrete
 import numpy as np
 from contextlib import closing
+from pandas import read_csv
+import os
 
-MAP = [
-    "+-------------------+",
-    "| :c:c:c: :c: : :c: |",
-    "| :p: : : : : :p: :p|",
-    "| :c:c: :c:c: : : :c|",
-    "| : : : : : :c:c: :c|",
-    "|c:p:p:c: :p: : : : |",
-    "| : : :c: : :c:c:c: |",
-    "| :c:c:c:p: :c:c:p: |",
-    "| : : :p:c: :p: : : |",
-    "|c:p: : : : : : : :c|",
-    "|p:c: :c:c:f: :c: :p|",
-    "+-------------------+",
-]
+#Definindo strings para manipulação
+def mapearTxt(texto):
+	if texto.find("c") != -1:
+		return "c"
+	elif texto.find("v") != -1:
+		return " "
+		
+	elif texto.find("p") != -1:
+		return "p"
+
+	elif texto.find("f") != -1:
+		return "f"
+
+#Criando mapa com base no anterior
+def mapear(dados):
+	mapa = []
+	mapa.append("+-------------------+")				
+	for i in range(len(dados[0])):
+		linha = "|"
+		k = 0
+		for j in range(len(dados)):
+			if k == len(dados)-1:
+				linha += mapearTxt(str(dados[j][i]))+"|"
+				break
+			else:
+				linha += mapearTxt(str(dados[j][i]))+":"
+			k+=1
+		mapa.append(linha)
+	mapa.append("+-------------------+")
+	return mapa
+
+MAP = mapear(read_csv(os.path.realpath(__file__)[:-len(os.path.basename(__file__))] +"Dados.csv",sep=";", header=None))
 
 
 class ParkingLotEnv(discrete.DiscreteEnv):
