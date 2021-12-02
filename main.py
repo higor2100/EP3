@@ -10,17 +10,14 @@
 
 
 import gym
-import sys, os, time
+import sys, time
 import numpy as np
 import random
 
 # animacao
 def animacao(frames):
-    clear_console = 'clear' if os.name == 'posix' else 'CLS'
-
     while True:
         for frame in frames:
-            # Write the current frame on stdout and sleep
             sys.stdout.write(frame)
             sys.stdout.flush()
             time.sleep(1)
